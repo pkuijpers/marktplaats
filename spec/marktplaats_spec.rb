@@ -7,7 +7,7 @@ describe Marktplaats, "#get_category" do
   end
 
   it "returns a list of items available on marktplaats" do
-    expect(@items.size).to have_at_least(1).item
+    expect(@items).to have_at_least(40).items
   end
 
   it "returns items with a title" do
@@ -21,4 +21,5 @@ describe Marktplaats, "#get_category" do
       expect(item.price).not_to be_nil
     end
   end
+
 end
