@@ -1,7 +1,8 @@
 class Marktplaats::Item
-  attr_reader :title
+  attr_reader :title, :price
 
-  def initialize(title)
+  def initialize(title, price=Nil)
     @title = title
+    @price = price
   end
 end

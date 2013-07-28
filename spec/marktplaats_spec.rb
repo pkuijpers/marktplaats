@@ -15,4 +15,10 @@ describe Marktplaats, "#get_category" do
       expect(item.title).not_to be_nil
     end
   end
+
+  it "returns items with a price" do
+    @items.each do |item|
+      expect(item.price).not_to be_nil
+    end
+  end
 end

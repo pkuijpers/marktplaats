@@ -7,10 +7,12 @@ class Marktplaats
     page = agent.get('http://www.marktplaats.nl/z/computers-en-software/videokaarten.html?categoryId=353')
     listings = page.search('.search-result')
     items = listings.map do |listing| 
-      Marktplaats::Item.new(listing.at('.mp-listing-title').text)
+      title = listing.at('.mp-listing-title').text
+      price = listing.at('.price').text
+      Marktplaats::Item.new(title, price)
     end
   end
 
 end
 
-require 'item'
+require_relative 'item'
