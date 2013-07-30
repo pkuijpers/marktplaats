@@ -2,7 +2,7 @@ require 'mechanize'
 
 class Marktplaats
 
-  def get_category(category)
+  def get_category(category, max_results = 200)
     agent = Mechanize.new
 
     # Load first page
@@ -10,9 +10,12 @@ class Marktplaats
     items = items_from(page)
   
     next_button = page.link_with(:text => 'Volgende')
-    page = next_button.click
-
-    items.concat(items_from(page))
+    until next_button.attributes[:class].include?("disabled") or items.size >= max_results
+      page = next_button.click
+      items.concat(items_from(page))
+      next_button = page.link_with(:text => 'Volgende')
+    end
+    items
   end
 
   private

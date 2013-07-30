@@ -7,7 +7,7 @@ describe Marktplaats, "#get_category" do
   end
 
   it "returns a list of items available on marktplaats" do
-    expect(@items).to have_at_least(40).items
+    expect(@items).to have_at_least(100).items
   end
 
   it "returns items with a title" do
