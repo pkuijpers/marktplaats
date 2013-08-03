@@ -22,4 +22,10 @@ describe Marktplaats, "#get_category" do
     end
   end
 
+  it "returns items with a url" do
+    @items.each do |item|
+      expect(item.url).not_to be_nil
+    end
+  end
+
 end

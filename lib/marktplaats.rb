@@ -21,11 +21,17 @@ class Marktplaats
   private
 
   def items_from(page)
-    listings = page.search('.search-result')
+    listings = page.search('.search-result').to_ary
+    # Bottom listing contains advertisements, don't include them
+    listings.reject! do |listing|
+      listing.attributes['class'].value.include?('bottom-listing')
+    end
+
     listings.map do |listing| 
       title = listing.at('.mp-listing-title').text
       price = listing.at('.price').text
-      Marktplaats::Item.new(title, price)
+      url = listing.at('.listing-title-description a').attributes['href'].value
+      Marktplaats::Item.new(title, url, price)
     end
   end
 
