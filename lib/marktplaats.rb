@@ -2,7 +2,7 @@ require 'mechanize'
 
 class Marktplaats
 
-  def get_category(category, max_results = 200)
+  def get_category(category, max_results: 200)
     agent = Mechanize.new
 
     # Load first page
