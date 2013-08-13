@@ -31,7 +31,8 @@ class Marktplaats
       title = listing.at('.mp-listing-title').text
       price = listing.at('.price').text
       url = listing.at('.listing-title-description a').attributes['href'].value
-      Marktplaats::Item.new(title, url, price)
+      image_url = listing.at('.listing-image img').attributes['src'].value
+      Marktplaats::Item.new(title, url, image_url, price)
     end
   end
 
