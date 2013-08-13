@@ -30,8 +30,8 @@ class Marktplaats
     listings.map do |listing| 
       title = listing.at('.mp-listing-title').text
       price = listing.at('.price').text
-      url = listing.at('.listing-title-description a').attributes['href'].value
-      image_url = listing.at('.listing-image img').attributes['src'].value
+      url = listing.at('.listing-title-description a').attributes['href'].value[/(.*)\?/, 1]
+      image_url = 'http:' + listing.at('.listing-image img').attributes['src'].value
       Marktplaats::Item.new(title, url, image_url, price)
     end
   end
