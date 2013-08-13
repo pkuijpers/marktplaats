@@ -2,11 +2,14 @@ require 'mechanize'
 
 class Marktplaats
 
+  URL = 'http://www.marktplaats.nl/z/cd-s-en-dvd-s/vinyl-singles.html?categoryId=1380'
+# URL = 'http://www.marktplaats.nl/z/computers-en-software/videokaarten.html?categoryId=353'
+
   def get_category(category, max_results: 200)
     agent = Mechanize.new
 
     # Load first page
-    page = agent.get('http://www.marktplaats.nl/z/computers-en-software/videokaarten.html?categoryId=353')
+    page = agent.get(URL)
     items = items_from(page)
   
     next_button = page.link_with(:text => 'Volgende')
