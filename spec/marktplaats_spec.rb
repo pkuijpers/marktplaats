@@ -1,21 +1,35 @@
 require './lib/marktplaats.rb'
 
-describe Marktplaats, "#get_category" do
+describe Marktplaats do
   before do
     @marktplaats = Marktplaats.new
-    @items = @marktplaats.get_category("Videokaarten")
   end
   
-  it "returns a list of items available on marktplaats" do
-    expect(@items).to have_at_least(100).items
+  describe "#get_category" do
+    before do
+      @items = @marktplaats.get_category("Videokaarten")
+    end
+
+    it "returns a list of items available on marktplaats" do
+      expect(@items).to have_at_least(100).items
+    end
+
+    it "has details on all items" do
+      @items.each do |item|
+        expect(item.title).not_to be_nil
+        expect(item.price).not_to be_nil
+        expect(item.url).not_to be_nil
+        expect(item.image_url).not_to be_nil
+      end
+    end
   end
 
-  it "has details on all items" do
-    @items.each do |item|
-      expect(item.title).not_to be_nil
-      expect(item.price).not_to be_nil
-      expect(item.url).not_to be_nil
-      expect(item.image_url).not_to be_nil
+  describe "#search" do
+    it "returns a list of items for a search term" do
+      search_term = "playstation 3 120 gb"
+      results = @marktplaats.search(search_term)
+
+      expect(results).to have_at_least(5).items
     end
   end
 
