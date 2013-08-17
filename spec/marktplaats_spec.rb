@@ -20,6 +20,7 @@ describe Marktplaats do
         expect(item.price).not_to be_nil
         expect(item.url).not_to be_nil
         expect(item.image_url).not_to be_nil
+        expect(item.date_posted).not_to be_nil
       end
     end
   end
