@@ -2,7 +2,7 @@ require './lib/marktplaats.rb'
 
 describe Marktplaats do
 
-  let(:marktplaats) { Marktplaats.new }
+  let(:marktplaats) { Marktplaats::Marktplaats.new }
   
   describe "#get_category" do
     let(:items) { marktplaats.get_category("Videokaarten") }
@@ -31,4 +31,13 @@ describe Marktplaats do
     end
   end
 
+  describe 'an initial call to category' do
+    context 'using writer methods' do
+      it 'should return a new instance with the expected value set' do
+        m = Marktplaats.category(:racefietsen)
+        expect(m).to be_instance_of Marktplaats::Command
+        expect(m.category_id).to eq(464)
+      end
+    end
+  end
 end
