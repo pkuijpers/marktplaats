@@ -2,6 +2,7 @@ require 'mechanize'
 require 'open-uri'
 
 require_relative 'marktplaats/command'
+require_relative 'marktplaats/categories'
 
 module Marktplaats
 
@@ -19,6 +20,15 @@ module Marktplaats
     INITIALIZING_METHODS.each do |v|
       define_method(v) do |arg|
         Command.new(v => arg)
+      end
+    end
+
+    # Handles dynamic finder for valid categories
+    def method_missing(name, *args, &block)
+      if found_category = Categories.category_id_by_name(name)
+        Command.new(category_id: found_category)
+      else
+        super
       end
     end
 

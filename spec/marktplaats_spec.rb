@@ -36,7 +36,15 @@ describe Marktplaats do
       it 'should return a new instance with the expected value set' do
         m = Marktplaats.category(:racefietsen)
         expect(m).to be_instance_of Marktplaats::Command
-        expect(m.category_id).to eq(464)
+        expect(m.category_id).to eq '464'
+      end
+    end
+
+    context 'using dynamic finder methods' do
+      it 'should return a new instance with the expected value set' do
+        m = Marktplaats.vinyl_singles
+        expect(m).to be_instance_of Marktplaats::Command
+        expect(m.category_id).to eq '1380'
       end
     end
   end
