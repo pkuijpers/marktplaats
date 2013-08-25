@@ -12,5 +12,9 @@ task :list do
   items = agent.get_category('Videokaarten', max_results: 10)
   items.each {|i| puts "#{i.title} - #{i.price} #{i.date_posted}"}
 end
-  
+
+desc "Start a Pry console session"
+task :console do
+  exec('pry -r ./lib/marktplaats')
+end
 
