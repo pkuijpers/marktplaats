@@ -44,5 +44,52 @@ module Marktplaats
         self
       end
     end
+
+    def fetch(max_results)
+      search_url = "http://www.marktplaats.nl/z/category/" \
+                    "subcategory.html?categoryId=#{@category_id}"
+      get_items(search_url, max_results)
+    end
+
+    private
+
+    def get_items(url, max_results)
+      agent = Mechanize.new
+      # Load first page
+      page = agent.get(url)
+      items = items_from(page)[0..(max_results - 1)]
+
+      next_button = page.link_with(:text => 'Volgende')
+      until next_button.attributes[:class].include?("disabled") or items.size >= max_results
+        page = next_button.click
+        items_to_add = (max_results - items.length - 1).abs
+        items.concat(items_from(page)[0..(items_to_add)])
+        next_button = page.link_with(:text => 'Volgende')
+      end
+      items
+    end
+
+    def items_from(page)
+      listings = page.search('.search-result').to_ary
+
+      # Bottom listing contains advertisements, don't include them
+      listings.reject! do |listing|
+        listing.attributes['class'].value.include?('bottom-listing')
+      end
+
+      # Ignore professional sellers: items that have a 'seller-link'
+      listings.reject! do |listing|
+        listing.at('.seller-link') != nil
+      end
+
+      listings.map do |listing|
+        title = listing.at('.mp-listing-title').text
+        price = listing.at('.price').text
+        url = listing.at('.listing-title-description a').attributes['href'].value[/(.*)\?/, 1]
+        image_url = 'http:' + listing.at('.listing-image img').attributes['src'].value
+        date = listing.at('.column-date').text.strip
+        {:title => title, :url => url, :image_url => image_url, :date_posted => date, :price => price}
+      end
+    end
   end
 end
