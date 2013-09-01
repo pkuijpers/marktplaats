@@ -6,7 +6,7 @@ require_relative 'marktplaats/categories'
 
 module Marktplaats
 
-  INITIALIZING_METHODS = [ :category ]
+  INITIALIZING_METHODS = [:category, :min_price, :max_price]
 
   class << self
 

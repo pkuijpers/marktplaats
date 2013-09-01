@@ -49,9 +49,38 @@ describe Marktplaats do
         end
       end
     end
+
+    describe 'an initial call to min_ask' do
+      it 'should return a new instance with the expected value set' do
+        c = Marktplaats.min_price(100)
+        expect(c.min_price).to eq 100
+      end
+    end
+
+    describe 'an initial call to max_ask' do
+      it 'should return a new instance with the expected value set' do
+        c = Marktplaats.max_price(200)
+        expect(c.max_price).to eq 200
+      end
+    end
+
   end
 
   describe 'Command' do
+
+    describe 'a chained call to min_price' do
+      it 'should return a new instance with the expected value set' do
+        c = Marktplaats.category(:racefietsen).min_price(100)
+        c.min_price.should == 100
+      end
+    end
+
+    describe 'a chained call to max_price' do
+      it 'should return a new instance with the expected value set' do
+        c = Marktplaats.category(:racefietsen).max_price(200)
+        c.max_price.should == 200
+      end
+    end
 
     describe '#fetch' do
 
@@ -76,12 +105,42 @@ describe Marktplaats do
 
       describe 'a request to fetch 100 results' do
         it 'should return an Array with length of 100' do
-          pending
           res = Marktplaats.category(:vinyl_singles).fetch(100)
           expect(res.length).to eq 100
         end
       end
 
+      describe 'a request with a max_price' do
+        let(:result) { Marktplaats.category(:racefietsen).max_price(500).fetch(10) }
+
+        it 'should return results with a price under the max_price' do
+          result.each do |item|
+            expect(item[:price]).to be <= 500
+          end
+        end
+      end
+
+      describe 'a request with a min_price' do
+        let(:result) { Marktplaats.category(:racefietsen).min_price(500).fetch(10) }
+
+        it 'should return results with a price under the min_price' do
+          result.each do |item|
+            expect(item[:price]).to be >= 500
+          end
+        end
+      end
+
+      describe 'a request with a min_price and a max_price' do
+        let(:result) { Marktplaats.category(:racefietsen).min_price(500).max_price(1000).fetch(10) }
+
+        it 'should return results with a price under the min_price' do
+          result.each do |item|
+            expect(item[:price]).to be >= 500
+            expect(item[:price]).to be <= 1000
+          end
+        end
+      end
+      
     end
   end
 
