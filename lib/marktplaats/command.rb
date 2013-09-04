@@ -17,7 +17,8 @@ module Marktplaats
       if category_id
         self.category_id = category_id
       else
-        raise ArgumentError, 'category name not found. You may need to set the category_id manually.'
+        raise ArgumentError, "category '#{category}' not found. "\
+          "You may need to set the category_id manually."
       end
 
       self

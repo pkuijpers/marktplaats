@@ -35,9 +35,22 @@ describe Marktplaats do
     describe 'an initial call to category' do
       context 'using writer methods' do
         it 'should return a new instance with the expected value set' do
-          m = Marktplaats.category(:racefietsen)
+          m = Marktplaats.category(:fietsen_racefietsen)
           expect(m).to be_instance_of Marktplaats::Command
-          expect(m.category_id).to eq '464'
+          expect(m.category_id).to eq 464
+        end
+
+        it "should throw an error if the category doesn't exist" do
+          expect { Marktplaats.category(:not_existing) }.to raise_error
+        end
+
+        it 'should accept all Marktplaats categories' do
+          [ %w( antiek_vazen 14 ),
+            %w( bloembakken 1852 ),
+            %w( wakeboarden 2636 ) ].each do |cat, id|
+            m = Marktplaats.category(cat)
+            expect(m.category_id).to eq id.to_i
+          end
         end
       end
 
@@ -45,7 +58,7 @@ describe Marktplaats do
         it 'should return a new instance with the expected value set' do
           m = Marktplaats.vinyl_singles
           expect(m).to be_instance_of Marktplaats::Command
-          expect(m.category_id).to eq '1380'
+          expect(m.category_id).to eq 1380
         end
       end
     end
@@ -70,14 +83,14 @@ describe Marktplaats do
 
     describe 'a chained call to min_price' do
       it 'should return a new instance with the expected value set' do
-        c = Marktplaats.category(:racefietsen).min_price(100)
+        c = Marktplaats.category(:fietsen_racefietsen).min_price(100)
         c.min_price.should == 100
       end
     end
 
     describe 'a chained call to max_price' do
       it 'should return a new instance with the expected value set' do
-        c = Marktplaats.category(:racefietsen).max_price(200)
+        c = Marktplaats.category(:fietsen_racefietsen).max_price(200)
         c.max_price.should == 200
       end
     end
@@ -86,7 +99,7 @@ describe Marktplaats do
 
       describe 'a request to fetch 1 result' do
 
-        let(:result) { Marktplaats.category(:racefietsen).fetch(1) }
+        let(:result) { Marktplaats.category(:fietsen_racefietsen).fetch(1) }
 
         it 'should return an Array with length of 1' do
           expect(result).to respond_to :each
@@ -111,7 +124,7 @@ describe Marktplaats do
       end
 
       describe 'a request with a max_price' do
-        let(:result) { Marktplaats.category(:racefietsen).max_price(500).fetch(10) }
+        let(:result) { Marktplaats.category(:fietsen_racefietsen).max_price(500).fetch(10) }
 
         it 'should return results with a price under the max_price' do
           result.each do |item|
@@ -121,7 +134,7 @@ describe Marktplaats do
       end
 
       describe 'a request with a min_price' do
-        let(:result) { Marktplaats.category(:racefietsen).min_price(500).fetch(10) }
+        let(:result) { Marktplaats.category(:fietsen_racefietsen).min_price(500).fetch(10) }
 
         it 'should return results with a price under the min_price' do
           result.each do |item|
@@ -131,7 +144,7 @@ describe Marktplaats do
       end
 
       describe 'a request with a min_price and a max_price' do
-        let(:result) { Marktplaats.category(:racefietsen).min_price(500).max_price(1000).fetch(10) }
+        let(:result) { Marktplaats.category(:fietsen_racefietsen).min_price(500).max_price(1000).fetch(10) }
 
         it 'should return results with a price under the min_price' do
           result.each do |item|
