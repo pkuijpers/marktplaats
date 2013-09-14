@@ -84,14 +84,22 @@ describe Marktplaats do
     describe 'a chained call to min_price' do
       it 'should return a new instance with the expected value set' do
         c = Marktplaats.category(:fietsen_racefietsen).min_price(100)
-        c.min_price.should == 100
+        expect(c.min_price).to eq 100
       end
     end
 
     describe 'a chained call to max_price' do
       it 'should return a new instance with the expected value set' do
         c = Marktplaats.category(:fietsen_racefietsen).max_price(200)
-        c.max_price.should == 200
+        expect(c.max_price).to eq 200
+      end
+    end
+
+    describe 'a chained call to postcode' do
+      it 'should return a new instance with the expected value set' do
+        c = Marktplaats.category(:sport).postcode('1234AB').distance(5)
+        expect(c.postcode).to eq '1234AB'
+        expect(c.distance).to eq 5
       end
     end
 
@@ -153,7 +161,17 @@ describe Marktplaats do
           end
         end
       end
-      
+
+      describe 'a request with a postcode and distance' do
+        let(:result) { Marktplaats.category(:sport).postcode('2513AA').distance(5).fetch(10) }
+
+        it 'should return results within the specified distance' do
+          expect(result).to have(10).items
+          result.each do |item|
+            expect(item[:distance]).to be <= 5
+          end
+        end
+      end
     end
   end
 

@@ -1,3 +1,5 @@
+require 'pry'
+
 module Marktplaats
   class SearchResultPage
 
@@ -25,17 +27,23 @@ module Marktplaats
     def items_from(page)
       listings = page.search('.search-result').to_ary
 
-      # Bottom listing contains advertisements, don't include them
-      listings.reject! do |listing|
-        listing.attributes['class'].value.include?('bottom-listing')
-      end
-
-      # Ignore professional sellers: items that have a 'seller-link'
-      listings.reject! do |listing|
-        listing.at('.seller-link') != nil
-      end
+      listings.reject! { |listing| ignore?(listing) }
 
       listings.map { |listing| item_from(listing) }
+    end
+
+    def ignore?(listing)
+      # Bottom listing contains advertisements, don't include them
+      ignore = listing.attributes['class'].value.include?('bottom-listing')
+
+      # Ignore professional sellers: items that have a 'seller-link'
+      ignore ||= listing.at('.seller-link') != nil
+
+      # Ignore featured advertisements
+      featured = listing.at('.mp-listing-priority-product')
+      ignore ||= (featured && !featured.text.empty?)
+
+      ignore
     end
 
     def item_from(listing)
@@ -44,7 +52,16 @@ module Marktplaats
       url = listing.at('.listing-title-description a').attributes['href'].value[/(.*)\?/, 1]
       image_url = 'http:' + listing.at('.listing-image img').attributes['src'].value
       date = listing.at('.column-date').text.strip
-      {:title => title, :url => url, :image_url => image_url, :date_posted => date, :price => price}
+      item = {:title => title, 
+              :url => url, 
+              :image_url => image_url, 
+              :date_posted => date, 
+              :price => price}
+
+      distance = listing.at('.distance')
+      item[:distance] = distance.text[/(\d+) km/, 1].to_i if distance
+
+      item
     end
 
     def to_price(price_text)

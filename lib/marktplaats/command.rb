@@ -39,6 +39,16 @@ module Marktplaats
       self
     end
 
+    def postcode=(postcode)
+      @postcode = postcode
+      self
+    end
+
+    def distance=(distance)
+      @distance = distance
+      self
+    end
+
     # Methods compatible with writing from block with instance_eval also serve
     # as simple reader methods. Object serves as the toggle between reader and
     # writer methods and thus is the only object which cannot be set explicitly.
@@ -77,6 +87,24 @@ module Marktplaats
       end
     end
 
+    def postcode(postcode = Object)
+      if postcode == Object
+        @postcode
+      else
+        self.postcode = postcode
+        self
+      end
+    end
+
+    def distance(distance = Object)
+      if distance == Object
+        @distance
+      else
+        self.distance = distance
+        self
+      end
+    end
+
     def fetch(max_results)
       get_items(build_uri, max_results)
     end
@@ -86,13 +114,15 @@ module Marktplaats
     def build_uri
       options = { :categoryId => category_id,
                      :priceFrom => min_price,
-                     :priceTo => max_price }
+                     :priceTo => max_price,
+                     :postcode => postcode,
+                     :distance => distance ? distance * 1000 : nil }
 
       # Remove options with nil value
       options.reject! { |k, v| v.nil? }
 
       query_string = build_query_string(options)
-
+  
       "http://www.marktplaats.nl/z/category/" \
                     "subcategory.html?#{query_string}"
     end
