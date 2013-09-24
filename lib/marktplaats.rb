@@ -90,4 +90,4 @@ module Marktplaats
   end
 end
 
-  require_relative 'item'
+require_relative 'marktplaats/item'
